@@ -1,0 +1,120 @@
+[
+  {
+    "name": "Speeding",
+    "charges": [
+      "Unlawful Speed 0-9 MPH Over Speed Limit",
+      "Unlawful Speed 10-14 MPH Over Speed Limit",
+      "Unlawful Speed 15-20 MPH Over Speed Limit",
+      "Unlawful Speed 21-26 MPH Over Speed Limit",
+      "Unlawful Speed 27-29 MPH Over Speed Limit",
+      "Unlawful Speed 30 MPH Or More Over Speed Limit",
+      "Impeding Traffic",
+      "Excessive Acceleration",
+      "Too Fast For Conditions"
+    ]
+  },
+  {
+    "name": "Signals / Signs",
+    "charges": [
+      "Failure To Stop At Stop Sign",
+      "Failure To Stop For Traffic Signal",
+      "Failure To Stop At R/R Signal / Barrier",
+      "Failure To Comply With Lane Direction Sign / Device",
+      "Wrong Direction On Posted One Way"
+    ]
+  },
+  {
+    "name": "Operation",
+    "charges": [
+      "Improper Lane Change Or Course",
+      "Improper Passing",
+      "Improper Turn",
+      "Failure To Signal",
+      "Driving On Shoulder",
+      "Passing In No Passing Zone",
+      "Illegal U-Turn",
+      "Failure to Maintain Lane",
+      "Crossing Over a Center Divider, Median Or Gore",
+      "Failure To Maintain Safe Distance",
+      "Careless Driving",
+      "Driving On Sidewalk / Bicycle Path",
+      "Riding On Exterior Of Vehicle",
+      "Operating A Telecommunications Device While Driving",
+      "Stopping On Rail Crossing",
+      "Driving On The Wrong Side Of The Road"
+    ]
+  },
+  {
+    "name": "Yielding",
+    "charges": [
+      "Failure To Yield To Stopped Emergency Vehicle / Personal",
+      "Failure To Yield To Emergency Vehicle",
+      "Failure To Yield To Pedestrian In Cross Walk",
+      "Failure To Yield To Highway Workers",
+      "Failure To Yield To Public Transit Vehicles",
+      "Failure To Yield At Intersection",
+      "Failure To Yield Entering Highway",
+      "Failure To Yield Leaving Obstructed Lane",
+      "Violation Of Right Of Way"
+    ]
+  },
+  {
+    "name": "Bikes / ATV",
+    "charges": [
+      "Failure To Wear DOT Approved Helmet",
+      "Lane Splitting",
+      "Riding Bicycle Not On Right",
+      "Operating Bicycle On Highway"
+    ]
+  },
+  {
+    "name": "Equipment",
+    "charges": [
+      "Defective Equipment",
+      "Safety Belt Violation",
+      "Vehicle Not Roadworthy",
+      "Windshield Damaged In Drivers View",
+      "Illegal Window Tint",
+      "Lights Not Illuminated As Required",
+      "Prohibited Lighting",
+      "Failure To Secure Load To Vehicle"
+    ]
+  },
+  {
+    "name": "Documents",
+    "charges": [
+      "Failure To Insure Vehicle",
+      "Expired Insurance",
+      "Failure To Register Vehicle",
+      "Expired Vehicle Registration",
+      "Failure To Display License Plate",
+      "Improper Registration",
+      "License Not Carried",
+      "Expired Drivers License",
+      "Driving While License Suspended",
+      "Driving Without License"
+    ]
+  },
+  {
+    "name": "Other / Public Citations",
+    "charges": [
+      "Open Container Of Alcohol",
+      "Underage Consumption Of Alcohol",
+      "Public Intoxication",
+      "Public Urination",
+      "Loitering",
+      "Trespassing",
+      "Reckless Endangerment",
+      "Disturbing The Peace",
+      "Indecent Exposure",
+      "Public Indecency",
+      "Littering",
+      "Jaywalking",
+      "Possession Of Fake ID / Drivers License",
+      "Walking On Highway",
+      "Unleashed Dog",
+      "Fishing Without License",
+      "Hunting Without License"
+    ]
+  }
+]

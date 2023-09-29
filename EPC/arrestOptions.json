@@ -1,0 +1,247 @@
+[
+  {
+    "name": "Misdemeanor Traffic",
+    "charges": [
+      "Driving On A Suspended License",
+      "Driving Without License",
+      "Driving With License Expired 1yr+",
+      "Refusal To Sign Traffic Summons",
+      "Leaving The Scene Of An Accident",
+      "Driving On The Wrong Side Of The Road",
+      "Reckless Driving",
+      "Aggressive Careless Driving",
+      "Reckless Speed (30+ MPH)",
+      "Street Racing"
+    ]
+  },
+  {
+    "name": "Felony Traffic",
+    "charges": [
+      "Fleeing Or Attempt To Elude LEO",
+      "Leaving The Scene Of An Accident Causing Injury Or Death",
+      "Street Racing Causing Injury or Death"
+    ]
+  },
+  {
+    "name": "DWI / DUI",
+    "charges": [
+      "Refusal To Submit To Sobriety Testing",
+      "Driving While Intoxicated",
+      "Driving Under The Influence Of Narcotics",
+      "Driving While Intoxicated Causing Injury Or Death",
+      "Driving Under The Influence Of Narcotics Causing Injury Or Death"
+    ]
+  },
+  {
+    "name": "Misdemeanor Firearms / Weapons / Explosives",
+    "charges": [
+      "Brandishing Firearm Or Deadly Weapon",
+      "Reckless Discharge Of A Firearm",
+      "Concealment Of Firearm Without CCW Permit",
+      "Unlawful Transport Of A Firearm",
+      "Shooting From Vehicle Or Roadway",
+      "Illegal Accessory To Firearm",
+      "Unlawful Possession Of Firearm"
+    ]
+  },
+  {
+    "name": "Felony Firearms / Weapons / Explosives",
+    "charges": [
+      "Discharge Of Firearm With Intent To Cause Injury Or Death",
+      "Possession Of An Explosive Device",
+      "Attempt To Detonate Explosive Device",
+      "Possession Of Firearm Or Ammunition By Felon",
+      "Possession Of Firearm In Commission Of Felony",
+      "Possession Of Stolen Firearm",
+      "Illegal Possession Of Automatic Weapon",
+      "Unlawful Possession Of Firearm"
+    ]
+  },
+  {
+    "name": "Battery",
+    "charges": [
+      "Simple Battery",
+      "Aggravated Battery",
+      "Aggravated Battery With Deadly Weapon",
+      "Domestic Battery",
+      "Battery on LEO",
+      "Battery On Fire / EMS",
+      "Malicious Wounding",
+      "Sexual Battery"
+    ]
+  },
+  {
+    "name": "Assault",
+    "charges": [
+      "Simple Assault",
+      "Aggravated Assault",
+      "Aggravated Assault With Deadly Weapon",
+      "Domestic Assault",
+      "Assault on LEO",
+      "Assault On Fire / EMS",
+      "Vehicular Assault",
+      "Sexual Assault"
+    ]
+  },
+  {
+    "name": "Resisting / Obstruction",
+    "charges": [
+      "Resisting Arrest",
+      "Resisting Arrest With Violence",
+      "Attempt To Elude On Foot",
+      "Failure To Comply With A Lawful Order",
+      "Providing False Information",
+      "Obstructing LEO",
+      "Obstructing Or Hindering Of Investigation"
+    ]
+  },
+  {
+    "name": "Property",
+    "charges": [
+      "Destruction Of Public Property",
+      "Destruction Of Private Property",
+      "Vandalism On Public Property",
+      "Vandalism On Private Property",
+      "Graffiti",
+      "Criminal Trespassing",
+      "Prowling"
+    ]
+  },
+  {
+    "name": "Drug Paraphernalia / Narcotics",
+    "charges": [
+      "Possession of Drug Paraphernalia",
+      "Trafficking Narcotics",
+      "Possession Of Prescription Pills",
+      "Possession Of Marijuana",
+      "Possession Of Cocaine",
+      "Possession Of Methamphetamine",
+      "Possession Of Heroine",
+      "Possession Of PCP",
+      "Possession Of LSD",
+      "Possession Of Ecstasy",
+      "Possession Of Anabolic Steroids",
+      "Possession Of Morphine",
+      "Possession Of Fentanyl",
+      "Possession Of Opium",
+      "Possession Of Oxycontin",
+      "Possession Of Ryhypnol (Roofies)"
+    ]
+  },
+  {
+    "name": "Robbery / Theft",
+    "charges": [
+      "Home Invasion",
+      "Robbery",
+      "Attempted Robbery",
+      "Armed Robbery",
+      "Attempted Armed Robbery",
+      "Carjacking",
+      "Grand Theft Auto",
+      "Burglary",
+      "Nighttime Burglary"
+    ]
+  },
+  {
+    "name": "Stolen Possession",
+    "charges": [
+      "Possession Of A Stolen Vehicle",
+      "Possession Of A Stolen Drivers License",
+      "Possession Of A Stolen License Plate",
+      "Possession Of A Stolen Debit / Credit Card",
+      "Possession Of Stolen Property"
+    ]
+  },
+  {
+    "name": "Court Related",
+    "charges": [
+      "Violation Of Probation",
+      "Violation of Parole",
+      "Failure To Register As Sex Offender",
+      "Violation Of Protective Order"
+    ]
+  },
+  {
+    "name": "Custody",
+    "charges": [
+      "Escape Custody",
+      "Aid In Escape Of Custody",
+      "Attempt To Escape Custody",
+      "Escape Jail",
+      "Aid In Escape Of Jail",
+      "Attempt To Escape Jail"
+    ]
+  },
+  {
+    "name": "Manslaughter / Homicide",
+    "charges": [
+      "1st Degree Murder",
+      "2nd Degree Murder",
+      "Attempted Murder",
+      "Conspiracy To Commit Murder",
+      "Voluntary Manslaughter",
+      "Involuntary Manslaughter",
+      "Vehicular Manslaughter",
+      "Vehicular Homicide",
+      "Negligent Homicide",
+      "Murder Of LEO",
+      "Attempted Murder Of LEO"
+    ]
+  },
+  {
+    "name": "Rape / Kidnapping",
+    "charges": [
+      "Rape",
+      "Attempted Rape",
+      "Kidnapping",
+      "Attempted Kidnapping",
+      "Aggravated Kidnapping",
+      "False Imprisonment"
+    ]
+  },
+  {
+    "name": "Arson",
+    "charges": [
+      "1st Degree Arson",
+      "2nd Degree Arson",
+      "3rd Degree Arson",
+      "Attempted 1st Degree Arson",
+      "Attempted 2nd Degree Arson",
+      "Attempted 3rd Degree Arson"
+    ]
+  },
+  {
+    "name": "Prostitution / Lewdness",
+    "charges": [
+      "Soliciting Prostitution",
+      "Engaging In Prostitution",
+      "Loitering With Purpose Of Prostitution",
+      "Public Act of Lewdness",
+      "Indecent Exposure",
+      "Sexual Acts"
+    ]
+  },
+  {
+    "name": "Public / Other Offenses",
+    "charges": [
+      "Impersonating Law Enforcement",
+      "Stalking",
+      "Abuse of 911 System",
+      "Unlawful Assembly",
+      "Present During A Riot",
+      "Disturbing The Peace",
+      "Disorderly Conduct",
+      "Harassment",
+      "Failure To Disperse",
+      "Loitering",
+      "Urinating In Public",
+      "Public Intoxication",
+      "Reckless Endangerment",
+      "Wanton Endangerment",
+      "Fighting In Public",
+      "Mayhem",
+      "Accessory After the Fact",
+      "Accessory Before the Fact"
+    ]
+  }
+]
