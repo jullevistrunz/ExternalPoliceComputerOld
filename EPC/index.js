@@ -179,19 +179,17 @@ function generateCars() {
     }
     const plateStatus =
       worldCar.isPolice == 'False'
-        ? Math.floor(Math.random() * 15) == 0
+        ? Math.floor(Math.random() * 25) == 0
           ? 'Invalid'
           : 'Valid'
         : 'Valid'
     const registration =
       worldCar.isPolice == 'False'
-        ? plateStatus == 'Valid'
+        ? Math.floor(Math.random() * 5) == 0
           ? Math.floor(Math.random() * 5) == 0
-            ? Math.floor(Math.random() * 5) == 0
-              ? 'None'
-              : 'Expired'
-            : 'Valid'
-          : 'None'
+            ? 'None'
+            : 'Expired'
+          : 'Valid'
         : 'Valid'
     const car = {
       ...worldCar,
@@ -206,20 +204,13 @@ function generateCars() {
       registration: registration,
       insurance:
         worldCar.isPolice == 'False'
-          ? plateStatus == 'Valid'
-            ? Math.floor(Math.random() * 5) == 0
-              ? Math.floor(Math.random() * 3) == 0
-                ? 'None'
-                : 'Expired'
-              : 'Valid'
-            : 'None'
+          ? Math.floor(Math.random() * 5) == 0
+            ? Math.floor(Math.random() * 3) == 0
+              ? 'None'
+              : 'Expired'
+            : 'Valid'
           : 'Valid',
-      stolen:
-        plateStatus == 'Valid'
-          ? worldCar.isStolen == 'True'
-            ? 'Yes'
-            : 'No'
-          : 'Unknown',
+      stolen: worldCar.isStolen == 'True' ? 'Yes' : 'No',
       plateStatus: plateStatus,
     }
     carData.push(car)

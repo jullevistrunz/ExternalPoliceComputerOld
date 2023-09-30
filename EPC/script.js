@@ -198,7 +198,7 @@ async function renderCarSearch() {
   )
   lc.innerHTML = ''
 
-  if (!car) {
+  if (!car || car.plateStatus == 'Invalid') {
     return (document.querySelector(
       '.searchCarPage .resultContainer .name'
     ).innerHTML = 'Vehicle Not Found')
@@ -207,7 +207,6 @@ async function renderCarSearch() {
     car.licensePlate
 
   lc.appendChild(createLabelElement('Model', car.model))
-  lc.appendChild(createLabelElement('License Plate Status', car.plateStatus))
   lc.appendChild(createLabelElement('Registration', car.registration))
   lc.appendChild(createLabelElement('Insurance', car.insurance))
   lc.appendChild(createLabelElement('Stolen', car.stolen))
