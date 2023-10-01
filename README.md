@@ -1,29 +1,14 @@
-# ExternalPoliceComputer
+# ExternalPoliceComputer 1.1.0
 
 A Police Computer Plugin and Server for LSPDFR.
 
 ## Citation and Arrest Options
 - Files: `EPC/citationOptions.json` &  `EPC/arrestOptions.json`
-- Example:
-```json
-[
-  {
-    "name": "Name of group",
-    "charges": [
-      "First Citation / Arrest charge",
-      "Second Citation / Arrest charge"
-    ]
-  },
-  {
-    "name": "Name of second group",
-    "charges": [
-      "Third Citation / Arrest charge",
-      "Fourth Citation / Arrest charge",
-      "Fifth Citation / Arrest charge"
-    ]
-  },
-]
-```
+- `minFine`: Minimum fine in $ for charge
+- `maxFine`: Maximum fine in $ for charge
+- `minMonth`: Minimum jail time in month for charge (arrests only)
+- `maxMonth`: Maximum jail time in month for charge (arrests only)
+- `probation`: Chance of probation 0-1 (arrests only)
 
 ## Map
 - File: `EPC/map.jpeg`
