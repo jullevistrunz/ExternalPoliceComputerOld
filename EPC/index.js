@@ -3,10 +3,6 @@ const fs = require('fs')
 const url = require('url')
 const port = 80
 
-clearGeneratedData()
-generatePeds()
-generateCars()
-
 const server = http.createServer(function (req, res) {
   const path = url.parse(req.url, true).pathname
   if (path == '/') {
@@ -46,6 +42,10 @@ const server = http.createServer(function (req, res) {
       res.writeHead(200, { 'Content-Type': 'text/json' })
       res.write(fs.readFileSync('arrestOptions.json'))
       res.end()
+    } else if (dataPath == 'court') {
+      res.writeHead(200, { 'Content-Type': 'text/json' })
+      res.write(fs.readFileSync('court.json'))
+      res.end()
     } else {
       res.writeHead(404)
       res.end()
@@ -81,6 +81,21 @@ const server = http.createServer(function (req, res) {
           }
         }
         fs.writeFileSync('peds.json', JSON.stringify(data))
+        res.writeHead(200)
+        res.end()
+      } else if (dataPath == 'addToCourt') {
+        const data = JSON.parse(fs.readFileSync('court.json'))
+        data.push(JSON.parse(body))
+        fs.writeFileSync('court.json', JSON.stringify(data))
+        if (JSON.parse(body).outcome.includes('Granted Probation')) {
+          const peds = JSON.parse(fs.readFileSync('peds.json'))
+          for (const i in peds) {
+            if (peds[i].name == JSON.parse(body).ped) {
+              peds[i].probation = 'Yes'
+            }
+          }
+          fs.writeFileSync('peds.json', JSON.stringify(peds))
+        }
         res.writeHead(200)
         res.end()
       } else {
@@ -131,14 +146,25 @@ function generatePeds() {
     const allCharges = getAllArrestOptions()
     const allCitations = getAllCitationOptions()
     const citations = getRandomCitations(allCitations)
+    const arrests = getRandomArrests(allCharges, worldPed.isWanted == 'True')
+    const probation =
+      !arrests.length || Math.floor(Math.random() * 4) != 0 ? 'No' : 'Yes'
+    const parole =
+      probation == 'Yes' ||
+      !arrests.length ||
+      Math.floor(Math.random() * 2) != 0
+        ? 'No'
+        : 'Yes'
     const ped = {
       ...worldPed,
       warrantText:
         worldPed.isWanted == 'True'
-          ? allCharges[Math.floor(Math.random() * allCharges.length)]
+          ? allCharges[Math.floor(Math.random() * allCharges.length)].name
           : '',
-      arrests: getRandomArrests(allCharges, worldPed.isWanted == 'True'),
+      arrests: arrests,
       citations: citations,
+      probation: probation,
+      parole: parole,
     }
     pedData.push(ped)
   }
@@ -257,7 +283,7 @@ function getRandomCitations(allCitations) {
   const citations = []
   while (i == 0) {
     citations.push(
-      allCitations[Math.floor(Math.random() * allCitations.length)]
+      allCitations[Math.floor(Math.random() * allCitations.length)].name
     )
     i = Math.floor(Math.random() * 10)
   }
@@ -271,7 +297,7 @@ function getRandomArrests(allCharges, isWanted) {
   let i = 0
   const arrests = []
   while (wasArrested && i == 0) {
-    arrests.push(allCharges[Math.floor(Math.random() * allCharges.length)])
+    arrests.push(allCharges[Math.floor(Math.random() * allCharges.length)].name)
     i = Math.floor(Math.random() * 10)
   }
   return arrests

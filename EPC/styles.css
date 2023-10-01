@@ -10,7 +10,7 @@
 body {
   background-color: var(--background-color);
   color: white;
-  font-family: 'Segoe UI';
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
@@ -25,6 +25,7 @@ body {
   grid-auto-flow: column;
   gap: 2px;
   background-color: var(--accent-color);
+  overflow-x: auto;
 }
 
 .header button {
@@ -141,7 +142,8 @@ body {
 .searchPedPage .resultContainer {
   width: calc(100% - 60px);
   margin: 30px;
-  height: auto;
+  height: calc(100% - 60px - 42px - 20px);
+  overflow-y: auto;
 }
 
 .searchCarPage .resultContainer .name,
@@ -153,24 +155,27 @@ body {
 }
 
 .searchCarPage .resultContainer .labelContainer,
-.searchPedPage .resultContainer .labelContainer {
+.searchPedPage .resultContainer .labelContainer,
+.courtPage .container {
   display: flex;
   flex-wrap: wrap;
   margin: 15px;
   width: auto;
   height: auto;
-  gap: 50px;
+  gap: 20px 50px;
 }
 
 .searchCarPage .resultContainer .label,
-.searchPedPage .resultContainer .label {
+.searchPedPage .resultContainer .label,
+.courtPage .container .label {
   width: fit-content;
   height: min-content;
   padding: 5px;
 }
 
 .searchCarPage .resultContainer .key,
-.searchPedPage .resultContainer .key {
+.searchPedPage .resultContainer .key,
+.courtPage .container .key {
   width: auto;
   height: auto;
   font-size: 20px;
@@ -178,7 +183,8 @@ body {
   color: var(--second-accent-color);
 }
 .searchCarPage .resultContainer .value,
-.searchPedPage .resultContainer .value {
+.searchPedPage .resultContainer .value,
+.courtPage .container .value {
   width: auto;
   height: auto;
   font-size: 20px;
@@ -392,6 +398,22 @@ body {
 .searchPedPage .citationReport .result .btn::before,
 .searchPedPage .arrestReport .result .btn::before {
   content: '• ';
+}
+
+.courtPage .list .title {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 20px;
+}
+
+.courtPage .container:not(:last-child) {
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--second-accent-color-half);
+}
+
+.courtPage .list {
+  height: 100%;
+  overflow-y: auto;
 }
 
 /* overwrite */

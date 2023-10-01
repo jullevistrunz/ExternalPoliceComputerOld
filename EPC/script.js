@@ -90,6 +90,8 @@ function goToPage(name) {
   } else if (name == 'searchCar') {
     document.querySelector('.searchCarPage .carInp').focus()
     document.querySelector('.searchCarPage .carInp').select()
+  } else if (name == 'court') {
+    renderCourt()
   }
 }
 
@@ -168,6 +170,8 @@ async function renderPedSearch() {
       ped.isWanted == 'True' ? ped.warrantText : 'None'
     )
   )
+  lc.appendChild(createLabelElement('Probation', ped.probation))
+  lc.appendChild(createLabelElement('Parole', ped.parole))
 
   const citations = ped.citations.length ? ped.citations : ['None']
   for (let i in citations) {
@@ -247,10 +251,11 @@ async function openCitationReport() {
     details.appendChild(summary)
     for (charge of group.charges) {
       const btn = document.createElement('button')
-      btn.innerHTML = charge
+      btn.dataset.charge = JSON.stringify(charge)
+      btn.innerHTML = charge.name
       btn.addEventListener('click', function () {
         this.blur()
-        addCitation(this.innerHTML)
+        addCitation(this.dataset.charge)
       })
       details.appendChild(btn)
     }
@@ -282,10 +287,11 @@ async function openArrestReport() {
     details.appendChild(summary)
     for (charge of group.charges) {
       const btn = document.createElement('button')
-      btn.innerHTML = charge
+      btn.dataset.charge = JSON.stringify(charge)
+      btn.innerHTML = charge.name
       btn.addEventListener('click', function () {
         this.blur()
-        addArrest(this.innerHTML)
+        addArrest(this.dataset.charge)
       })
       details.appendChild(btn)
     }
@@ -298,7 +304,8 @@ function addCitation(charge) {
     '.searchPedPage .citationReport .result'
   )
   const btn = document.createElement('button')
-  btn.innerHTML = charge
+  btn.innerHTML = JSON.parse(charge).name
+  btn.dataset.charge = charge
   btn.classList.add('btn')
   btn.addEventListener('click', function () {
     this.remove()
@@ -311,7 +318,8 @@ function addArrest(charge) {
     '.searchPedPage .arrestReport .result'
   )
   const btn = document.createElement('button')
-  btn.innerHTML = charge
+  btn.innerHTML = JSON.parse(charge).name
+  btn.dataset.charge = charge
   btn.classList.add('btn')
   btn.addEventListener('click', function () {
     this.remove()
@@ -319,7 +327,7 @@ function addArrest(charge) {
   resultEl.append(btn)
 }
 
-function submitCitations() {
+async function submitCitations() {
   const currentPed = document.querySelector(
     '.searchPedPage .resultContainer .name'
   ).innerHTML
@@ -328,8 +336,9 @@ function submitCitations() {
     '.searchPedPage .citationReport .result .btn'
   )) {
     citations.push(el.innerHTML)
+    addCitationToCourt(JSON.parse(el.dataset.charge), currentPed)
   }
-  fetch('/post/addCitations', {
+  await fetch('/post/addCitations', {
     method: 'post',
     body: JSON.stringify({
       name: currentPed,
@@ -346,7 +355,7 @@ function closeCitations() {
     .classList.add('hidden')
 }
 
-function submitArrests() {
+async function submitArrests() {
   const currentPed = document.querySelector(
     '.searchPedPage .resultContainer .name'
   ).innerHTML
@@ -355,8 +364,9 @@ function submitArrests() {
     '.searchPedPage .arrestReport .result .btn'
   )) {
     arrests.push(el.innerHTML)
+    addArrestToCourt(JSON.parse(el.dataset.charge), currentPed)
   }
-  fetch('/post/addArrests', {
+  await fetch('/post/addArrests', {
     method: 'post',
     body: JSON.stringify({
       name: currentPed,
@@ -369,4 +379,101 @@ function submitArrests() {
 
 function closeArrests() {
   document.querySelector('.searchPedPage .arrestReport').classList.add('hidden')
+}
+
+async function addCitationToCourt(charge, pedName) {
+  const caseNumber = `SA${Math.random().toString().slice(2, 10)}`
+  const outcome = `Fine: $${bigNumberToNiceString(
+    charge.minFine +
+      Math.floor(Math.random() * (charge.maxFine - charge.minFine))
+  )}`
+
+  await fetch('/post/addToCourt', {
+    method: 'post',
+    body: JSON.stringify({
+      ped: pedName,
+      number: caseNumber,
+      charge: charge.name,
+      outcome: outcome,
+    }),
+  })
+}
+
+async function addArrestToCourt(charge, pedName) {
+  const caseNumber = `SA${Math.random().toString().slice(2, 10)}`
+  const jailTime =
+    Math.floor(Math.random() * (1 / charge.probation)) != 0
+      ? charge.maxMonths == null
+        ? Math.floor(Math.random() * 4) != 0
+          ? 'Jail: ' +
+            monthsToYearsAndMonths(
+              charge.minMonths +
+                Math.floor(Math.random() * charge.minMonths * 2)
+            )
+          : 'Life In Prison'
+        : 'Jail: ' +
+          monthsToYearsAndMonths(
+            charge.minMonths +
+              Math.floor(Math.random() * (charge.maxMonths - charge.minMonths))
+          )
+      : 'Granted Probation'
+  const outcome = `Fine: $${bigNumberToNiceString(
+    charge.minFine +
+      Math.floor(Math.random() * (charge.maxFine - charge.minFine))
+  )}<br>${jailTime}`
+
+  await fetch('/post/addToCourt', {
+    method: 'post',
+    body: JSON.stringify({
+      ped: pedName,
+      number: caseNumber,
+      charge: charge.name,
+      outcome: outcome,
+    }),
+  })
+}
+
+async function renderCourt() {
+  const list = document.querySelector('.courtPage .list')
+  list.innerHTML = ''
+  const court = await (await fetch('/data/court')).json()
+  court.reverse()
+  if (!court.length) {
+    const title = document.createElement('div')
+    title.classList.add('title')
+    title.innerHTML = 'No Court Cases Found'
+    list.appendChild(title)
+    return
+  }
+  for (const courtCase of court) {
+    const el = document.createElement('div')
+    el.classList.add('container')
+    el.appendChild(createLabelElement('Case Number', courtCase.number))
+    el.appendChild(
+      createLabelElement('Defendant', courtCase.ped, () => {
+        openPedInSearchPedPage(courtCase.ped)
+      })
+    )
+    el.appendChild(createLabelElement('Offense', courtCase.charge))
+    el.appendChild(createLabelElement('Outcome', courtCase.outcome))
+    list.appendChild(el)
+  }
+}
+
+function monthsToYearsAndMonths(input) {
+  return input % 12 != 0
+    ? Math.floor(input / 12) != 0
+      ? `${Math.floor(input / 12)}yr. ${input % 12}mth.`
+      : ` ${input % 12}mth.`
+    : `${input / 12}yr.`
+}
+
+function bigNumberToNiceString(number) {
+  const arr = number.toString().split('').reverse()
+  for (const i in arr) {
+    if (i % 3 == 0 && i != 0) {
+      arr[i] += ','
+    }
+  }
+  return arr.reverse().join('')
 }
