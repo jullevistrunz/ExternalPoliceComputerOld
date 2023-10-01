@@ -13,6 +13,10 @@ const server = http.createServer(function (req, res) {
     res.writeHead(200, { 'Content-Type': 'text/css' })
     res.write(fs.readFileSync('styles.css'))
     res.end()
+  } else if (path == '/customStyles') {
+    res.writeHead(200, { 'Content-Type': 'text/css' })
+    res.write(fs.readFileSync('custom.css'))
+    res.end()
   } else if (path == '/script') {
     res.writeHead(200, { 'Content-Type': 'text/js' })
     res.write(fs.readFileSync('script.js'))
