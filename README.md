@@ -1,4 +1,4 @@
-# ExternalPoliceComputer 1.1.0
+# ExternalPoliceComputer 1.1.1
 
 A Police Computer Plugin and Server for LSPDFR.
 
@@ -16,9 +16,9 @@ A Police Computer Plugin and Server for LSPDFR.
 - Source: https://forum.cfx.re/uploads/default/original/4X/c/6/7/c67d156aaba53758e345a6cf72110044048f3e3e.jpeg
 
 ## Styles
-- File: `EPC/styles.css`
+- File: `EPC/custom.css`
 - For simple customization you may change colors and the header size in the `:root` selector
-- Feel free to also change the rest to your likings
+- Feel free to also add more css. `EPC/custom.css` will overwrite `EPC/styles.css`
 
 ## Steam overlay
 - In steam go to Steam<a>&rarr;</a>Settings<a>&rarr;</a>In Game
