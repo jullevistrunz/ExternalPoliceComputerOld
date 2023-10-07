@@ -11,9 +11,10 @@
     <div class="header">
       <button class="map">Map</button>
       <button class="alphabet">Phonetic Alphabet</button>
-      <button class="searchPed">Search Ped</button>
-      <button class="searchCar">Search Vehicle</button>
+      <button class="searchPed">Peds</button>
+      <button class="searchCar">Vehicles</button>
       <button class="court">Court</button>
+      <button class="shift">Shift</button>
     </div>
     <div class="content">
       <div class="mapPage hidden">
@@ -288,9 +289,28 @@
         </div>
       </div>
       <div class="courtPage hidden">
+        <div class="inpContainer">
+          <input
+            type="text"
+            class="pedInp"
+            placeholder="Search Case By Defendant's Name"
+          />
+          <button class="pedBtn">Search</button>
+        </div>
+        <div class="list"></div>
+      </div>
+      <div class="shiftPage hidden">
+        <div class="btnContainer">
+          <button class="startShift" disabled>Start Shift</button>
+          <button class="stopShift" disabled>End Shift</button>
+        </div>
+        <div class="title currentShiftTitle">Current Shift</div>
+        <div class="currentShift"></div>
+        <div class="title shiftsTitle">Shifts</div>
         <div class="list"></div>
       </div>
     </div>
   </body>
+  <script src="/custom"></script>
   <script src="/script" defer></script>
 </html>

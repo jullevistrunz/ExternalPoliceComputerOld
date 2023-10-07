@@ -1,7 +1,11 @@
 const http = require('http')
 const fs = require('fs')
 const url = require('url')
+const os = require('os')
 const port = 80
+
+// clear data on start up
+clearGeneratedData()
 
 const server = http.createServer(function (req, res) {
   const path = url.parse(req.url, true).pathname
@@ -20,6 +24,10 @@ const server = http.createServer(function (req, res) {
   } else if (path == '/script') {
     res.writeHead(200, { 'Content-Type': 'text/js' })
     res.write(fs.readFileSync('script.js'))
+    res.end()
+  } else if (path == '/custom') {
+    res.writeHead(200, { 'Content-Type': 'text/js' })
+    res.write(fs.readFileSync('custom.js'))
     res.end()
   } else if (path == '/map') {
     res.writeHead(200, { 'Content-Type': 'image/jpeg' })
@@ -49,6 +57,10 @@ const server = http.createServer(function (req, res) {
     } else if (dataPath == 'court') {
       res.writeHead(200, { 'Content-Type': 'text/json' })
       res.write(fs.readFileSync('court.json'))
+      res.end()
+    } else if (dataPath == 'shift') {
+      res.writeHead(200, { 'Content-Type': 'text/json' })
+      res.write(fs.readFileSync('shift.json'))
       res.end()
     } else {
       res.writeHead(404)
@@ -100,6 +112,29 @@ const server = http.createServer(function (req, res) {
           }
           fs.writeFileSync('peds.json', JSON.stringify(peds))
         }
+        const shift = JSON.parse(fs.readFileSync('shift.json'))
+        if (shift.currentShift) {
+          shift.currentShift.courtCases.push(JSON.parse(body).number)
+          fs.writeFileSync('shift.json', JSON.stringify(shift))
+        }
+        res.writeHead(200)
+        res.end()
+      } else if (dataPath == 'updateCurrentShift') {
+        const data = JSON.parse(fs.readFileSync('shift.json'))
+        data.currentShift = JSON.parse(body)
+        fs.writeFileSync('shift.json', JSON.stringify(data))
+        res.writeHead(200)
+        res.end()
+      } else if (dataPath == 'addShift') {
+        const data = JSON.parse(fs.readFileSync('shift.json'))
+        data.shifts.push(JSON.parse(body))
+        fs.writeFileSync('shift.json', JSON.stringify(data))
+        res.writeHead(200)
+        res.end()
+      } else if (dataPath == 'updateCurrentShiftNotes') {
+        const data = JSON.parse(fs.readFileSync('shift.json'))
+        data.currentShift.notes = body
+        fs.writeFileSync('shift.json', JSON.stringify(data))
         res.writeHead(200)
         res.end()
       } else {
@@ -114,9 +149,25 @@ const server = http.createServer(function (req, res) {
 })
 server.listen(port, function (error) {
   if (error) {
-    console.log('Something went wrong' + error)
+    console.error('Something went wrong' + error)
   } else {
-    console.log('Listening on port ' + port)
+    const nets = os.networkInterfaces()
+    let result = ''
+    for (const name of Object.keys(nets)) {
+      for (const net of nets[name]) {
+        const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
+        if (net.family === familyV4Value && !net.internal) {
+          result = net.address
+        }
+      }
+    }
+    console.info(
+      'The Node.js server has started. You can minimize this window now and start your game.'
+    )
+    console.info(`For usage on the same device go to http://localhost:${port}`)
+    console.info(
+      `For usage on another device go to http://${os.hostname()}:${port} or http://${result}:${port}`
+    )
   }
 })
 
@@ -308,8 +359,19 @@ function getRandomArrests(allCharges, isWanted) {
 }
 
 function clearGeneratedData() {
-  fs.writeFileSync('peds.json', '[]')
   fs.writeFileSync('cars.json', '[]')
+  const peds = JSON.parse(fs.readFileSync('peds.json'))
+  const court = JSON.parse(fs.readFileSync('court.json'))
+  const newPeds = []
+  for (let i in peds) {
+    for (const courtCase of court) {
+      if (peds[i].name == courtCase.ped) {
+        newPeds.push(peds[i])
+        break
+      }
+    }
+  }
+  fs.writeFileSync('peds.json', JSON.stringify(newPeds))
 }
 
 function getRandomPed() {

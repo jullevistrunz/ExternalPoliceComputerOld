@@ -67,8 +67,35 @@ document
     }
   })
 
+document.querySelector('.courtPage .pedBtn').addEventListener('click', () => {
+  findPedInCourt(document.querySelector('.courtPage .pedInp').value)
+})
+document
+  .querySelector('.courtPage .pedInp')
+  .addEventListener('keydown', function (e) {
+    if (e.key == 'Enter') {
+      findPedInCourt(this.value)
+    }
+  })
+
+document
+  .querySelector('.shiftPage .startShift')
+  .addEventListener('click', function () {
+    startShift()
+  })
+
+document
+  .querySelector('.shiftPage .stopShift')
+  .addEventListener('click', function () {
+    endShift()
+  })
+
+setInterval(() => {
+  updateCurrentShiftDuration()
+}, 1000)
+
 //funcs
-function goToPage(name) {
+async function goToPage(name) {
   document.querySelectorAll('.content > *').forEach((page) => {
     page.classList.add('hidden')
   })
@@ -91,7 +118,9 @@ function goToPage(name) {
     document.querySelector('.searchCarPage .carInp').focus()
     document.querySelector('.searchCarPage .carInp').select()
   } else if (name == 'court') {
-    renderCourt()
+    await renderCourt()
+  } else if (name == 'shift') {
+    await renderShiftPage()
   }
 }
 
@@ -257,6 +286,24 @@ async function openCitationReport() {
         this.blur()
         addCitation(this.dataset.charge)
       })
+      btn.addEventListener('mouseover', async function () {
+        this.dataset.open = 'true'
+        await sleep(150)
+        if (this.dataset.open == 'false') return
+        this.innerHTML =
+          JSON.parse(this.dataset.charge).minFine ==
+          JSON.parse(this.dataset.charge).maxFine
+            ? `${JSON.parse(this.dataset.charge).name}<br>Fine: $${
+                JSON.parse(this.dataset.charge).minFine
+              }`
+            : `${JSON.parse(this.dataset.charge).name}<br>Fine: $${
+                JSON.parse(this.dataset.charge).minFine
+              }-$${JSON.parse(this.dataset.charge).maxFine}`
+      })
+      btn.addEventListener('mouseleave', function () {
+        this.innerHTML = JSON.parse(this.dataset.charge).name
+        this.dataset.open = 'false'
+      })
       details.appendChild(btn)
     }
     options.appendChild(details)
@@ -292,6 +339,36 @@ async function openArrestReport() {
       btn.addEventListener('click', function () {
         this.blur()
         addArrest(this.dataset.charge)
+      })
+      btn.addEventListener('mouseover', async function () {
+        this.dataset.open = 'true'
+        await sleep(150)
+        if (this.dataset.open == 'false') return
+        const fineString =
+          JSON.parse(this.dataset.charge).minFine ==
+          JSON.parse(this.dataset.charge).maxFine
+            ? `Fine: $${JSON.parse(this.dataset.charge).minFine}`
+            : `Fine: $${JSON.parse(this.dataset.charge).minFine} - $${
+                JSON.parse(this.dataset.charge).maxFine
+              }`
+        const jailString =
+          JSON.parse(this.dataset.charge).minMonths ==
+          JSON.parse(this.dataset.charge).maxMonths
+            ? `${wordForJail}: ${monthsToYearsAndMonths(
+                JSON.parse(this.dataset.charge).minMonths
+              )}`
+            : `${wordForJail}: ${monthsToYearsAndMonths(
+                JSON.parse(this.dataset.charge).minMonths
+              )} - ${monthsToYearsAndMonths(
+                JSON.parse(this.dataset.charge).maxMonths
+              )}`
+        this.innerHTML = `${
+          JSON.parse(this.dataset.charge).name
+        }<br><a style="opacity: 0.75">${fineString} | ${jailString}</a>`
+      })
+      btn.addEventListener('mouseleave', function () {
+        this.innerHTML = JSON.parse(this.dataset.charge).name
+        this.dataset.open = 'false'
       })
       details.appendChild(btn)
     }
@@ -332,11 +409,12 @@ async function submitCitations() {
     '.searchPedPage .resultContainer .name'
   ).innerHTML
   const citations = []
+  const citationsData = []
   for (el of document.querySelectorAll(
     '.searchPedPage .citationReport .result .btn'
   )) {
     citations.push(el.innerHTML)
-    addCitationToCourt(JSON.parse(el.dataset.charge), currentPed)
+    citationsData.push(el.dataset.charge)
   }
   await fetch('/post/addCitations', {
     method: 'post',
@@ -345,6 +423,7 @@ async function submitCitations() {
       citations: citations,
     }),
   })
+  addCitationToCourt(citationsData, currentPed)
   closeCitations()
   openPedInSearchPedPage(currentPed)
 }
@@ -360,11 +439,12 @@ async function submitArrests() {
     '.searchPedPage .resultContainer .name'
   ).innerHTML
   const arrests = []
+  const arrestsData = []
   for (el of document.querySelectorAll(
     '.searchPedPage .arrestReport .result .btn'
   )) {
     arrests.push(el.innerHTML)
-    addArrestToCourt(JSON.parse(el.dataset.charge), currentPed)
+    arrestsData.push(el.dataset.charge)
   }
   await fetch('/post/addArrests', {
     method: 'post',
@@ -373,6 +453,7 @@ async function submitArrests() {
       arrests: arrests,
     }),
   })
+  addArrestToCourt(arrestsData, currentPed)
   closeArrests()
   openPedInSearchPedPage(currentPed)
 }
@@ -381,54 +462,89 @@ function closeArrests() {
   document.querySelector('.searchPedPage .arrestReport').classList.add('hidden')
 }
 
-async function addCitationToCourt(charge, pedName) {
-  const caseNumber = `SA${Math.random().toString().slice(2, 10)}`
-  const outcome = `Fine: $${bigNumberToNiceString(
-    charge.minFine +
+async function addCitationToCourt(charges, pedName) {
+  const nameList = []
+  let fullFine = 0
+  for (let charge of charges) {
+    charge = JSON.parse(charge)
+    const fine =
+      charge.minFine +
       Math.floor(Math.random() * (charge.maxFine - charge.minFine))
-  )}`
+    const outcome = `Fine: $${bigNumberToNiceString(fine)}`
+    nameList.push(
+      `<details><summary onclick="this.blur()">${charge.name}</summary><div style="opacity: 0.75">${outcome}</div></details>`
+    )
+    fullFine += fine
+  }
+  const caseNumber = `SA${Math.random().toString().slice(2, 10)}`
 
   await fetch('/post/addToCourt', {
     method: 'post',
     body: JSON.stringify({
       ped: pedName,
       number: caseNumber,
-      charge: charge.name,
-      outcome: outcome,
+      charge: nameList.join(''),
+      outcome: `Fine: $${bigNumberToNiceString(fullFine)}`,
     }),
   })
 }
 
-async function addArrestToCourt(charge, pedName) {
-  const caseNumber = `SA${Math.random().toString().slice(2, 10)}`
-  const jailTime =
-    Math.floor(Math.random() * (1 / charge.probation)) != 0
-      ? charge.maxMonths == null
-        ? Math.floor(Math.random() * 4) != 0
-          ? 'Jail: ' +
-            monthsToYearsAndMonths(
-              charge.minMonths +
-                Math.floor(Math.random() * charge.minMonths * 2)
-            )
-          : 'Life In Prison'
-        : 'Jail: ' +
-          monthsToYearsAndMonths(
-            charge.minMonths +
-              Math.floor(Math.random() * (charge.maxMonths - charge.minMonths))
-          )
-      : 'Granted Probation'
-  const outcome = `Fine: $${bigNumberToNiceString(
-    charge.minFine +
+async function addArrestToCourt(charges, pedName) {
+  const nameList = []
+  let fullFine = 0
+  let fullJailTimeArr = []
+  for (let charge of charges) {
+    charge = JSON.parse(charge)
+    const jailTime =
+      Math.floor(Math.random() * (1 / charge.probation)) != 0
+        ? charge.maxMonths == null
+          ? Math.floor(Math.random() * 4) != 0
+            ? charge.minMonths +
+              Math.floor(Math.random() * charge.minMonths * 2)
+            : 'Life In Prison'
+          : charge.minMonths +
+            Math.floor(Math.random() * (charge.maxMonths - charge.minMonths))
+        : 'Granted Probation'
+
+    const fine =
+      charge.minFine +
       Math.floor(Math.random() * (charge.maxFine - charge.minFine))
-  )}<br>${jailTime}`
+
+    const jailTimeString =
+      typeof jailTime == 'number' ? monthsToYearsAndMonths(jailTime) : jailTime
+
+    const outcome = `Fine: $${bigNumberToNiceString(
+      fine
+    )}<br>${wordForJail}: ${jailTimeString}`
+    nameList.push(
+      `<details><summary onclick="this.blur()">${charge.name}</summary><div style="opacity: 0.75">${outcome}</div></details>`
+    )
+    fullFine += fine
+    fullJailTimeArr.push(jailTime)
+  }
+  let fullJailTime = 0
+  for (const jailTimeEl of fullJailTimeArr) {
+    if (jailTimeEl == 'Life In Prison') {
+      fullJailTime = 'Life In Prison'
+      break
+    }
+    if (jailTimeEl == 'Granted Probation') continue
+    fullJailTime += jailTimeEl
+  }
+
+  const caseNumber = `SA${Math.random().toString().slice(2, 10)}`
 
   await fetch('/post/addToCourt', {
     method: 'post',
     body: JSON.stringify({
       ped: pedName,
       number: caseNumber,
-      charge: charge.name,
-      outcome: outcome,
+      charge: nameList.join(''),
+      outcome: `Fine: $${bigNumberToNiceString(fullFine)}<br>${wordForJail}: ${
+        typeof fullJailTime == 'number'
+          ? monthsToYearsAndMonths(fullJailTime)
+          : fullJailTime
+      }`,
     }),
   })
 }
@@ -448,19 +564,22 @@ async function renderCourt() {
   for (const courtCase of court) {
     const el = document.createElement('div')
     el.classList.add('container')
-    el.appendChild(createLabelElement('Case Number', courtCase.number))
+    el.appendChild(
+      createLabelElement('Case Number', courtCase.number)
+    ).classList.add('caseNumber')
     el.appendChild(
       createLabelElement('Defendant', courtCase.ped, () => {
         openPedInSearchPedPage(courtCase.ped)
       })
-    )
-    el.appendChild(createLabelElement('Offense', courtCase.charge))
+    ).classList.add('pedName')
+    el.appendChild(createLabelElement('Offense(s)', courtCase.charge))
     el.appendChild(createLabelElement('Outcome', courtCase.outcome))
     list.appendChild(el)
   }
 }
 
 function monthsToYearsAndMonths(input) {
+  if (input == null) return 'Life'
   return input % 12 != 0
     ? Math.floor(input / 12) != 0
       ? `${Math.floor(input / 12)}yr. ${input % 12}mth.`
@@ -476,4 +595,261 @@ function bigNumberToNiceString(number) {
     }
   }
   return arr.reverse().join('')
+}
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms))
+}
+
+async function findPedInCourt(pedName) {
+  if (!pedName) return renderCourt()
+  await renderCourt()
+  const courtContainers = document.querySelectorAll(
+    '.courtPage .list .container'
+  )
+  const elements = []
+  for (const caseContainer of courtContainers) {
+    if (
+      caseContainer.querySelector('.pedName .value').innerHTML.toLowerCase() ==
+      pedName.toLowerCase()
+    ) {
+      elements.push(caseContainer)
+    }
+  }
+  const list = document.querySelector('.courtPage .list')
+  list.innerHTML = ''
+  if (!elements.length) {
+    const title = document.createElement('div')
+    title.classList.add('title')
+    title.innerHTML = 'No Court Cases Found For This Defendant'
+    list.appendChild(title)
+    return
+  }
+  for (container of elements) {
+    list.appendChild(container)
+  }
+}
+
+async function startShift() {
+  const currentDate = new Date()
+  await fetch('/post/updateCurrentShift', {
+    method: 'post',
+    body: JSON.stringify({
+      start: currentDate.getTime(),
+      notes: '',
+      courtCases: [],
+    }),
+  })
+  renderShiftPage()
+}
+
+async function endShift() {
+  const currentDate = new Date()
+  const currentData = await (await fetch('/data/shift')).json()
+  await fetch('/post/updateCurrentShift', {
+    method: 'post',
+    body: JSON.stringify(null),
+  })
+  await fetch('/post/addShift', {
+    method: 'post',
+    body: JSON.stringify({
+      ...currentData.currentShift,
+      end: currentDate.getTime(),
+    }),
+  })
+  renderShiftPage()
+}
+
+async function renderShiftPage() {
+  const currentShiftEl = document.querySelector('.shiftPage .currentShift')
+  const list = document.querySelector('.shiftPage .list')
+  list.innerHTML = ''
+  currentShiftEl.innerHTML = ''
+
+  const data = await (await fetch('/data/shift')).json()
+  document.querySelector('.shiftPage .startShift').disabled =
+    !!data.currentShift
+  document.querySelector('.shiftPage .stopShift').disabled = !data.currentShift
+
+  if (data.currentShift) {
+    const date = new Date(data.currentShift.start)
+    currentShiftEl.dataset.currentShift = JSON.stringify(data.currentShift)
+    currentShiftEl.appendChild(
+      createLabelElement(
+        'Start',
+        `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${
+          date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+        }`
+      )
+    )
+    currentShiftEl
+      .appendChild(
+        createLabelElement('Duration', msToDisplay(getDuration(date.getTime())))
+      )
+      .classList.add('currentShiftDuration')
+    const courtCases = []
+    for (const courtCase of data.currentShift.courtCases) {
+      courtCases.push(
+        `<a class="courtCaseValue" onclick="goToCourtCaseFromValue('${courtCase}')">${courtCase}</a>`
+      )
+    }
+    currentShiftEl.appendChild(
+      createLabelElement(
+        'Court Cases',
+        data.currentShift.courtCases.length ? courtCases.join('<br>') : 'None'
+      )
+    )
+    currentShiftEl.appendChild(
+      createLabelElement(
+        'Notes',
+        `<textarea class="currentShiftNotes">${data.currentShift.notes}</textarea>`
+      )
+    )
+    document
+      .querySelector('.shiftPage .currentShift .currentShiftNotes')
+      .addEventListener('input', function () {
+        fetch('/post/updateCurrentShiftNotes', {
+          method: 'post',
+          body: this.value,
+        })
+      })
+    document.querySelector('.shiftPage .currentShiftTitle').innerHTML =
+      'Current Shift'
+    document.querySelector('.shiftPage .currentShiftTitle').style.color =
+      'unset'
+  } else {
+    document.querySelector('.shiftPage .currentShiftTitle').innerHTML =
+      'Off Duty'
+    document.querySelector('.shiftPage .currentShiftTitle').style.color =
+      'var(--warning-color)'
+  }
+
+  data.shifts.length
+    ? document
+        .querySelector('.shiftPage .shiftsTitle')
+        .classList.remove('hidden')
+    : document.querySelector('.shiftPage .shiftsTitle').classList.add('hidden')
+
+  for (const shift of data.shifts.reverse()) {
+    const labelContainer = document.createElement('div')
+    labelContainer.classList.add('container')
+    const startDate = new Date(shift.start)
+    const endDate = new Date(shift.end)
+    const duration = shift.end - shift.start
+    labelContainer.appendChild(
+      createLabelElement(
+        'Start',
+        `${
+          startDate.getHours() < 10
+            ? `0${startDate.getHours()}`
+            : startDate.getHours()
+        }:${
+          startDate.getMinutes() < 10
+            ? `0${startDate.getMinutes()}`
+            : startDate.getMinutes()
+        }`
+      )
+    )
+    labelContainer.appendChild(
+      createLabelElement(
+        'End',
+        `${
+          endDate.getHours() < 10
+            ? `0${endDate.getHours()}`
+            : endDate.getHours()
+        }:${
+          endDate.getMinutes() < 10
+            ? `0${endDate.getMinutes()}`
+            : endDate.getMinutes()
+        }`
+      )
+    )
+    labelContainer.appendChild(
+      createLabelElement('Duration', msToDisplay(duration))
+    )
+    const courtCases = []
+    for (const courtCase of shift.courtCases) {
+      courtCases.push(
+        `<a class="courtCaseValue" onclick="goToCourtCaseFromValue('${courtCase}')">${courtCase}</a>`
+      )
+    }
+    labelContainer.appendChild(
+      createLabelElement(
+        'Court Cases',
+        courtCases.length ? courtCases.join('<br>') : 'None'
+      )
+    )
+    labelContainer.appendChild(
+      createLabelElement(
+        'Notes',
+        `${
+          shift.notes
+            ? `<div class="shiftNotes">${shift.notes
+                .split('\n')
+                .join('<br>')}</div>`
+            : 'None'
+        }`
+      )
+    )
+    list.appendChild(labelContainer)
+  }
+}
+
+async function goToCourtCaseFromValue(caseNumber) {
+  await goToPage('court')
+  if (!caseNumber) return renderCourt()
+  const courtContainers = document.querySelectorAll(
+    '.courtPage .list .container'
+  )
+  const elements = []
+  for (const caseContainer of courtContainers) {
+    if (
+      caseContainer.querySelector('.caseNumber .value').innerHTML == caseNumber
+    ) {
+      elements.push(caseContainer)
+    }
+  }
+  const list = document.querySelector('.courtPage .list')
+  list.innerHTML = ''
+  if (!elements.length) {
+    const title = document.createElement('div')
+    title.classList.add('title')
+    title.innerHTML = 'No Court Cases Found With This Number'
+    list.appendChild(title)
+    return
+  }
+  for (container of elements) {
+    list.appendChild(container)
+  }
+}
+
+function msToDisplay(ms) {
+  let seconds = (ms / 1000).toFixed(0)
+  let minutes = Math.round(seconds / 60)
+  let hours = '00'
+
+  hours = Math.floor(minutes / 60)
+  hours = hours >= 10 ? hours : '0' + hours
+  minutes = minutes - hours * 60
+  minutes = minutes >= 10 ? minutes : '0' + minutes
+
+  seconds = Math.floor(seconds % 60)
+  seconds = seconds >= 10 ? seconds : '0' + seconds
+  return hours + ':' + minutes
+}
+
+function getDuration(start) {
+  return new Date().getTime() - start
+}
+
+function updateCurrentShiftDuration() {
+  const el = document.querySelector(
+    '.shiftPage .currentShift .currentShiftDuration .value'
+  )
+  if (el) {
+    const currentShiftData = JSON.parse(
+      document.querySelector('.shiftPage .currentShift').dataset.currentShift
+    )
+    el.innerHTML = msToDisplay(getDuration(currentShiftData.start))
+  }
 }

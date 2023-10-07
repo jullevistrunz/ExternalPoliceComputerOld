@@ -79,7 +79,9 @@ body {
 }
 
 .searchPedPage .inpContainer,
-.searchCarPage .inpContainer {
+.courtPage .inpContainer,
+.searchCarPage .inpContainer,
+.shiftPage .btnContainer {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
@@ -89,7 +91,8 @@ body {
 }
 
 .searchCarPage .carInp,
-.searchPedPage .pedInp {
+.searchPedPage .pedInp,
+.courtPage .pedInp {
   height: auto;
   width: unset;
   font-size: 16px;
@@ -103,12 +106,15 @@ body {
 }
 
 .searchCarPage .carInp:focus,
-.searchPedPage .pedInp:focus {
+.searchPedPage .pedInp:focus,
+.courtPage .pedInp:focus {
   border-color: var(--accent-color);
 }
 
 .searchCarPage .carBtn,
-.searchPedPage .pedBtn {
+.searchPedPage .pedBtn,
+.courtPage .pedBtn,
+.shiftPage .btnContainer button {
   height: auto;
   width: unset;
   font-size: 16px;
@@ -124,8 +130,12 @@ body {
 
 .searchPedPage .pedBtn:hover,
 .searchPedPage .pedBtn:focus,
+.courtPage .pedBtn:hover,
+.courtPage .pedBtn:focus,
 .searchCarPage .carBtn:hover,
-.searchCarPage .carBtn:focus {
+.searchCarPage .carBtn:focus,
+.shiftPage .btnContainer button:not(:disabled):hover,
+.shiftPage .btnContainer button:not(:disabled):focus {
   border-color: var(--accent-color);
 }
 
@@ -138,7 +148,8 @@ body {
 }
 
 .searchCarPage .resultContainer .name,
-.searchPedPage .resultContainer .name {
+.searchPedPage .resultContainer .name,
+.shiftPage .title {
   width: auto;
   height: auto;
   font-size: 32px;
@@ -147,7 +158,9 @@ body {
 
 .searchCarPage .resultContainer .labelContainer,
 .searchPedPage .resultContainer .labelContainer,
-.courtPage .container {
+.courtPage .container,
+.shiftPage .currentShift,
+.shiftPage .list .container {
   display: flex;
   flex-wrap: wrap;
   margin: 15px;
@@ -158,7 +171,9 @@ body {
 
 .searchCarPage .resultContainer .label,
 .searchPedPage .resultContainer .label,
-.courtPage .container .label {
+.courtPage .container .label,
+.shiftPage .currentShift .label,
+.shiftPage .list .label {
   width: fit-content;
   height: min-content;
   padding: 5px;
@@ -166,16 +181,21 @@ body {
 
 .searchCarPage .resultContainer .key,
 .searchPedPage .resultContainer .key,
-.courtPage .container .key {
+.courtPage .container .key,
+.shiftPage .currentShift .key,
+.shiftPage .list .key {
   width: auto;
   height: auto;
   font-size: 20px;
   font-weight: 600;
   color: var(--second-accent-color);
 }
+
 .searchCarPage .resultContainer .value,
 .searchPedPage .resultContainer .value,
-.courtPage .container .value {
+.courtPage .container .value,
+.shiftPage .currentShift .value,
+.shiftPage .list .value {
   width: auto;
   height: auto;
   font-size: 20px;
@@ -262,7 +282,8 @@ body {
 }
 
 .searchPedPage .citationReport .options summary,
-.searchPedPage .arrestReport .options summary {
+.searchPedPage .arrestReport .options summary,
+.courtPage summary {
   cursor: pointer;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -270,12 +291,14 @@ body {
 }
 
 .searchPedPage .citationReport .options summary:focus,
-.searchPedPage .arrestReport .options summary:focus {
+.searchPedPage .arrestReport .options summary:focus,
+.courtPage summary:focus {
   color: var(--second-accent-color);
 }
 
 .searchPedPage .citationReport .options summary::marker,
-.searchPedPage .arrestReport .options summary::marker {
+.searchPedPage .arrestReport .options summary::marker,
+.courtPage summary::marker {
   color: var(--second-accent-color);
 }
 
@@ -342,7 +365,7 @@ body {
 
 .searchPedPage .citationReport .result .title button.close,
 .searchPedPage .arrestReport .result .title button.close {
-  border-color: red;
+  border-color: var(--warning-color);
 }
 
 .searchPedPage .citationReport .result .title button.close:hover,
@@ -403,7 +426,72 @@ body {
 }
 
 .courtPage .list {
-  height: 100%;
+  height: calc(100% - 82px);
+  overflow-y: auto;
+}
+
+.courtPage summary {
+  margin: 0;
+}
+
+.courtPage details div {
+  margin-left: 21px;
+}
+
+.shiftPage .btnContainer button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.shiftPage .currentShiftNotes {
+  background-color: transparent;
+  color: var(--main-color);
+  border: var(--second-accent-color) 2px solid;
+  outline: none;
+  font-size: 20px;
+  font-weight: 400;
+  resize: none;
+  height: 250px;
+  width: 250px;
+  padding: 10px;
+}
+
+.shiftPage .shiftNotes {
+  font-family: monospace;
+  background-color: transparent;
+  color: var(--main-color);
+  border: var(--second-accent-color) 2px solid;
+  outline: none;
+  font-size: 20px;
+  font-weight: 400;
+  resize: none;
+  height: fit-content;
+  width: fit-content;
+  padding: 10px;
+}
+
+.shiftPage .courtCaseValue {
+  cursor: pointer;
+}
+
+.shiftPage .courtCaseValue::before {
+  content: '• ';
+  transition: 50ms linear;
+}
+
+.shiftPage .courtCaseValue:hover::before {
+  color: var(--second-accent-color);
+}
+
+.shiftPage .list .container:not(:first-child) {
+  border-top: 2px solid var(--second-accent-color-half);
+}
+
+.shiftPage .title {
+  margin-left: 15px;
+}
+
+.shiftPage {
   overflow-y: auto;
 }
 
