@@ -372,7 +372,7 @@ body {
 .searchPedPage .arrestReport .result .title button.close:hover,
 .searchPedPage .citationReport .result .title button.close:focus,
 .searchPedPage .arrestReport .result .title button.close:focus {
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: var(--warning-color-half);
 }
 
 .searchPedPage .citationReport .result .title > div,
@@ -404,7 +404,7 @@ body {
 .searchPedPage .arrestReport .result .btn:hover,
 .searchPedPage .citationReport .result .btn:focus,
 .searchPedPage .arrestReport .result .btn:focus {
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: var(--warning-color-half);
 }
 
 .searchPedPage .citationReport .result .btn::before,
@@ -485,6 +485,7 @@ body {
 
 .shiftPage .list .container:not(:first-child) {
   border-top: 2px solid var(--second-accent-color-half);
+  padding-top: 15px;
 }
 
 .shiftPage .title {

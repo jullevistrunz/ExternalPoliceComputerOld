@@ -293,12 +293,16 @@ async function openCitationReport() {
         this.innerHTML =
           JSON.parse(this.dataset.charge).minFine ==
           JSON.parse(this.dataset.charge).maxFine
-            ? `${JSON.parse(this.dataset.charge).name}<br>Fine: $${
+            ? `${
+                JSON.parse(this.dataset.charge).name
+              }<br><a style="opacity: 0.75; pointer-events: none;">Fine: ${currency}${
                 JSON.parse(this.dataset.charge).minFine
-              }`
-            : `${JSON.parse(this.dataset.charge).name}<br>Fine: $${
+              }</a>`
+            : `${
+                JSON.parse(this.dataset.charge).name
+              }<br><a style="opacity: 0.75; pointer-events: none;">Fine: ${currency}${
                 JSON.parse(this.dataset.charge).minFine
-              }-$${JSON.parse(this.dataset.charge).maxFine}`
+              }-${currency}${JSON.parse(this.dataset.charge).maxFine}</a>`
       })
       btn.addEventListener('mouseleave', function () {
         this.innerHTML = JSON.parse(this.dataset.charge).name
@@ -347,10 +351,10 @@ async function openArrestReport() {
         const fineString =
           JSON.parse(this.dataset.charge).minFine ==
           JSON.parse(this.dataset.charge).maxFine
-            ? `Fine: $${JSON.parse(this.dataset.charge).minFine}`
-            : `Fine: $${JSON.parse(this.dataset.charge).minFine} - $${
-                JSON.parse(this.dataset.charge).maxFine
-              }`
+            ? `Fine: ${currency}${JSON.parse(this.dataset.charge).minFine}`
+            : `Fine: ${currency}${
+                JSON.parse(this.dataset.charge).minFine
+              } - ${currency}${JSON.parse(this.dataset.charge).maxFine}`
         const jailString =
           JSON.parse(this.dataset.charge).minMonths ==
           JSON.parse(this.dataset.charge).maxMonths
@@ -364,7 +368,7 @@ async function openArrestReport() {
               )}`
         this.innerHTML = `${
           JSON.parse(this.dataset.charge).name
-        }<br><a style="opacity: 0.75">${fineString} | ${jailString}</a>`
+        }<br><a style="opacity: 0.75; pointer-events: none;">${fineString} | ${jailString}</a>`
       })
       btn.addEventListener('mouseleave', function () {
         this.innerHTML = JSON.parse(this.dataset.charge).name
@@ -470,7 +474,7 @@ async function addCitationToCourt(charges, pedName) {
     const fine =
       charge.minFine +
       Math.floor(Math.random() * (charge.maxFine - charge.minFine))
-    const outcome = `Fine: $${bigNumberToNiceString(fine)}`
+    const outcome = `Fine: ${currency}${bigNumberToNiceString(fine)}`
     nameList.push(
       `<details><summary onclick="this.blur()">${charge.name}</summary><div style="opacity: 0.75">${outcome}</div></details>`
     )
@@ -484,7 +488,7 @@ async function addCitationToCourt(charges, pedName) {
       ped: pedName,
       number: caseNumber,
       charge: nameList.join(''),
-      outcome: `Fine: $${bigNumberToNiceString(fullFine)}`,
+      outcome: `Fine: ${currency}${bigNumberToNiceString(fullFine)}`,
     }),
   })
 }
@@ -513,7 +517,7 @@ async function addArrestToCourt(charges, pedName) {
     const jailTimeString =
       typeof jailTime == 'number' ? monthsToYearsAndMonths(jailTime) : jailTime
 
-    const outcome = `Fine: $${bigNumberToNiceString(
+    const outcome = `Fine: ${currency}${bigNumberToNiceString(
       fine
     )}<br>${wordForJail}: ${jailTimeString}`
     nameList.push(
@@ -540,7 +544,9 @@ async function addArrestToCourt(charges, pedName) {
       ped: pedName,
       number: caseNumber,
       charge: nameList.join(''),
-      outcome: `Fine: $${bigNumberToNiceString(fullFine)}<br>${wordForJail}: ${
+      outcome: `Fine: ${currency}${bigNumberToNiceString(
+        fullFine
+      )}<br>${wordForJail}: ${
         typeof fullJailTime == 'number'
           ? monthsToYearsAndMonths(fullJailTime)
           : fullJailTime
