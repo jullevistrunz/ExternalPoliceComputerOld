@@ -1,4 +1,4 @@
-# ExternalPoliceComputer 1.2.0
+# ExternalPoliceComputer 1.2.1
 
 A Police Computer Plugin and Server for LSPDFR.
 
